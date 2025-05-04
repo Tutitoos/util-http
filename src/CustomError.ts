@@ -23,8 +23,6 @@ class CustomError extends Error {
 		this.client = client;
 
 		Error.captureStackTrace(this, this.constructor);
-
-		this.log();
 	}
 
 	public toJSON() {
