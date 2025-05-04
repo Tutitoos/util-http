@@ -1,0 +1,41 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"files": {
+		"include": ["src/**/*.ts", "src/**/*.json", "src/**/*.yaml"]
+	},
+	"formatter": {
+		"enabled": false
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"a11y": {
+				"useKeyWithClickEvents": "off"
+			},
+			"correctness": {
+				"noChildrenProp": "off",
+				"useExhaustiveDependencies": "off"
+			},
+			"security": {
+				"noDangerouslySetInnerHtml": "off"
+			},
+			"suspicious": {
+				"noArrayIndexKey": "warn",
+				"noExplicitAny": "off"
+			},
+			"complexity": {
+				"useLiteralKeys": "off",
+				"noStaticOnlyClass": "off",
+				"noForEach": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off",
+				"noParameterAssign": "off"
+			}
+		}
+	}
+}

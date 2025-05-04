@@ -1,0 +1,7 @@
+.prettierignore
+.prettierrc
+.eslintrc.json
+biome.json
+tsconfig.json
+node_modules/
+src/

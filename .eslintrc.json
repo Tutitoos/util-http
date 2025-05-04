@@ -1,0 +1,73 @@
+{
+	"root": true,
+	"env": {
+		"es2021": true,
+		"node": true
+	},
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"settings": {
+		"import/resolver": {
+			"typescript": {
+				"alwaysTryTypes": true,
+				"project": "./tsconfig.json"
+			}
+		}
+	},
+	"extends": ["xo", "prettier", "plugin:promise/recommended", "plugin:import/recommended", "plugin:import/typescript"],
+	"plugins": ["promise", "import", "@typescript-eslint"],
+	"overrides": [
+		{
+			"extends": ["xo-typescript", "prettier"],
+			"files": ["*.ts", "*.tsx"],
+			"rules": {
+				"@typescript-eslint/no-unused-vars":  ["warn", { "argsIgnorePattern": "^_" }],
+				"@typescript-eslint/consistent-type-definitions": "off",
+				"@typescript-eslint/prefer-nullish-coalescing": "off",
+				"@typescript-eslint/no-empty-function": "off",
+				"@typescript-eslint/naming-convention": "off",
+				"@typescript-eslint/no-base-to-string": "off",
+				"@typescript-eslint/restrict-template-expressions": "off",
+				"@typescript-eslint/ban-types": "off",
+				"@typescript-eslint/no-confusing-void-expression": "off",
+				"@typescript-eslint/member-ordering": "off",
+				"@typescript-eslint/parameter-properties": "off",
+				"@typescript-eslint/no-extraneous-class": "off",
+				"@typescript-eslint/no-unsafe-assignment": "off",
+				"@typescript-eslint/no-unsafe-call": "off",
+				"@typescript-eslint/no-unsafe-return": "off",
+				"@typescript-eslint/switch-exhaustiveness-check": "off",
+				"@typescript-eslint/only-throw-error": "off",
+				"@typescript-eslint/class-literal-property-style": "off"
+			}
+		}
+	],
+	"rules": {
+		"no-void": "off",
+		"no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+		"comma-dangle": ["error", "never"],
+		"camelcase": "off",
+		"import/first": "error",
+		"import/no-duplicates": "error",
+		"no-duplicate-imports": "error",
+		"capitalized-comments": "off",
+		"no-warning-comments": "off",
+		"promise/catch-or-return": "off",
+		"promise/always-return": "off",
+		"promise/no-nesting": "off",
+		"no-await-in-loop": "off",
+		"complexity": "off",
+		"no-eval": "off",
+		"no-implicit-coercion": "off",
+		"no-constant-binary-expression": "off",
+		"no-new": "off",
+		"new-cap": "off",
+		"max-depth": "off",
+		"guard-for-in": "off",
+		"no-unreachable-loop": "off",
+		"no-negated-condition": "off"
+	}
+}
