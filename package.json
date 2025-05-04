@@ -27,7 +27,9 @@
 		"test": "node tests.cjs",
 		"lint": "pnpm run lint:eslint && pnpm run lint:biome",
 		"lint:eslint": "npx eslint --ignore-path .gitignore . --max-warnings 0",
-		"lint:biome": "npx @biomejs/biome check src"
+		"lint:biome": "npx @biomejs/biome check src",
+		"pub": "npm publish",
+		"adduser": "npm adduser"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
