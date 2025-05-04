@@ -56,3 +56,7 @@ export const contentTypes: Record<string, ContentTypeHandlerKey> = {
 	"application/msword": "buffer",
 	"application/vnd.openxmlformats-officedocument.wordprocessingml.document": "buffer"
 };
+
+export default {
+	contentTypes
+};
