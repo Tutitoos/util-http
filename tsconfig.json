@@ -1,17 +1,15 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "outDir": "dist",
-    "declaration": true,
-    "noEmitOnError": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true
-  },
-  "include": [
-    "src/**/*.ts",
-  ],
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "CommonJS",
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"outDir": "dist",
+		"declaration": true,
+		"noEmitOnError": true,
+		"forceConsistentCasingInFileNames": true,
+		"noImplicitAny": true,
+		"strictNullChecks": true
+	},
+	"include": ["src/**/*.ts", "src/**/*.d.ts"]
 }
