@@ -1,4 +1,4 @@
-import { contentTypes } from "../constants";
+import { contentTypes } from "../Constants";
 import type { ClientOptions, ContentTypeHandlerKey } from "../types";
 import HttpClient from "./HttpClient";
 
@@ -18,7 +18,7 @@ class FetchClient {
 		return FetchClient._instance;
 	}
 
-	private async custom<ResponseJSON>(config: ClientOptions): Promise<ResponseJSON> {
+	private async custom<Response>(config: ClientOptions): Promise<Response> {
 		const url = `${config.url}`;
 
 		if (config.timeout === 0) config.timeout = 15000;
@@ -46,46 +46,48 @@ class FetchClient {
 				}
 
 				const handlerKey = contentTypes[contentType];
-				if (handlerKey) {
-					const handler = this.contentHandlers[handlerKey];
-					return (await handler(response)) as ResponseJSON;
+				if (!handlerKey) {
+					throw new Error(`Unsupported Content-Type: ${contentType}`);
 				}
 
-				throw new Error(`Unsupported Content-Type: ${contentType}`);
+				const handler = this.contentHandlers[handlerKey];
+				return (await handler(response)) as Response;
 			})
-			.catch((error: unknown) => HttpClient.handleErrors(error, "fetch"));
+			.catch((error: unknown) => {
+				throw HttpClient.handleErrors(error, "fetch");
+			});
 	}
 
-	public async get<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async get<Response>(config: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...config,
 			method: "GET"
 		});
 	}
 
-	public async post<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async post<Response>(config: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...config,
 			method: "POST"
 		});
 	}
 
-	async patch<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	async patch<Response>(config: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...config,
 			method: "PATCH"
 		});
 	}
 
-	public async put<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async put<Response>(config: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...config,
 			method: "PUT"
 		});
 	}
 
-	public async delete<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async delete<Response>(config: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...config,
 			method: "DELETE"
 		});

@@ -23,7 +23,7 @@ class HttpClient {
 		return HttpClient._instance;
 	}
 
-	public static handleErrors<ResponseJSON>(error: unknown, client: string): ResponseJSON {
+	public static handleErrors(error: unknown, client: string): CustomError {
 		let { message = "An unknown error occurred", name, cause, stack } = error as Error;
 		let statusCode = 500;
 		if (error instanceof AxiosError) {
@@ -49,7 +49,7 @@ class HttpClient {
 			statusCode = 404;
 		}
 
-		throw new CustomError({
+		return new CustomError({
 			client,
 			message,
 			statusCode,

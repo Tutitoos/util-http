@@ -11,44 +11,46 @@ class AxiosClient {
 		return AxiosClient._instance;
 	}
 
-	private async custom<ResponseJSON>(options: ClientOptions): Promise<ResponseJSON> {
+	private async custom<Response>(options: ClientOptions): Promise<Response> {
 		if (options.timeout === 0) options.timeout = 15000;
 
-		return axios<ResponseJSON>(options)
+		return axios<Response>(options)
 			.then((response) => response.data)
-			.catch((error: unknown) => HttpClient.handleErrors(error, "axios"));
+			.catch((error: unknown) => {
+				throw HttpClient.handleErrors(error, "axios");
+			});
 	}
 
-	public async get<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async get<Response>(options: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...options,
 			method: "GET"
 		});
 	}
 
-	public async post<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async post<Response>(options: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...options,
 			method: "POST"
 		});
 	}
 
-	public async patch<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async patch<Response>(options: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...options,
 			method: "PATCH"
 		});
 	}
 
-	public async put<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async put<Response>(options: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...options,
 			method: "PUT"
 		});
 	}
 
-	public async delete<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async delete<Response>(options: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...options,
 			method: "DELETE"
 		});

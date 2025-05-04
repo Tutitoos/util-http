@@ -1,6 +1,6 @@
 import { type Dispatcher, request } from "undici";
 import type BodyReadable from "undici/types/readable";
-import { contentTypes } from "../constants";
+import { contentTypes } from "../Constants";
 import type { ClientOptions, ContentTypeHandlerKey } from "../types";
 import HttpClient from "./HttpClient";
 
@@ -20,7 +20,7 @@ class UndiciClient {
 		return UndiciClient._instance;
 	}
 
-	private async custom<ResponseJSON>(config: ClientOptions): Promise<ResponseJSON> {
+	private async custom<Response>(config: ClientOptions): Promise<Response> {
 		const url = `${config.url}`;
 
 		if (config.timeout === 0) config.timeout = 15000;
@@ -31,9 +31,9 @@ class UndiciClient {
 		Reflect.deleteProperty(config, "data");
 		Reflect.deleteProperty(config, "url");
 
-		const response: Dispatcher.ResponseData = await request(url, config).catch((error: unknown) =>
-			HttpClient.handleErrors(error, "undici")
-		);
+		const response: Dispatcher.ResponseData = await request(url, config).catch((error: unknown) => {
+			throw HttpClient.handleErrors(error, "undici");
+		});
 
 		if (response.statusCode !== 200) {
 			throw response;
@@ -50,44 +50,44 @@ class UndiciClient {
 		}
 
 		const handlerKey = contentTypes[contentType];
-		if (handlerKey) {
-			const handler = this.contentHandlers[handlerKey];
-			return (await handler(response.body)) as ResponseJSON;
+		if (!handlerKey) {
+			throw new Error(`Unsupported Content-Type: ${contentType}`);
 		}
 
-		throw new Error(`Unsupported Content-Type: ${contentType}`);
+		const handler = this.contentHandlers[handlerKey];
+		return (await handler(response.body)) as Response;
 	}
 
-	public async get<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async get<Response>(options: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...options,
 			method: "GET"
 		});
 	}
 
-	public async post<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async post<Response>(options: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...options,
 			method: "POST"
 		});
 	}
 
-	public async patch<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async patch<Response>(options: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...options,
 			method: "PATCH"
 		});
 	}
 
-	public async put<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async put<Response>(options: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...options,
 			method: "PUT"
 		});
 	}
 
-	public async delete<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
-		return this.custom<ResponseJSON>({
+	public async delete<Response>(options: Omit<ClientOptions, "method">): Promise<Response> {
+		return this.custom<Response>({
 			...options,
 			method: "DELETE"
 		});
