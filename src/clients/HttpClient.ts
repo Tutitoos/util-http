@@ -1,3 +1,5 @@
+import { AxiosError } from "axios";
+import CustomError from "../CustomError";
 import AxiosClient from "./AxiosClient";
 import FetchClient from "./FetchClient";
 import UndiciClient from "./UndiciClient";
@@ -19,6 +21,42 @@ class HttpClient {
 		HttpClient._instance ||= new HttpClient();
 
 		return HttpClient._instance;
+	}
+
+	public static handleErrors<ResponseJSON>(error: unknown, client: string): ResponseJSON {
+		let { message = "An unknown error occurred", name, cause, stack } = error as Error;
+		let statusCode = 500;
+		if (error instanceof AxiosError) {
+			const { response } = error;
+
+			statusCode = response?.status || 500;
+			if (typeof response?.data === "object") {
+				message = response?.data?.errors?.[0]?.message || response?.data?.error?.message || response?.data?.message;
+			} else if (typeof response?.data === "string") {
+				const trimmedData = response.data.trim();
+				const errorText = trimmedData.length > 0 ? trimmedData : response.statusText;
+				message = errorText;
+			}
+		}
+
+		if (message.includes("<!DOCTYPE html>") || message.includes("ECONNREFUSED")) {
+			message = "Unavailable Service";
+			statusCode = 503;
+		}
+
+		if (message.includes("ENOTFOUND")) {
+			message = "Resource Not Found";
+			statusCode = 404;
+		}
+
+		throw new CustomError({
+			client,
+			message,
+			statusCode,
+			name,
+			cause,
+			stack
+		});
 	}
 }
 

@@ -9,3 +9,5 @@ export interface ClientOptions {
 }
 
 export type ContentTypeHandlerKey = "json" | "urlencoded" | "formData" | "text" | "buffer";
+
+export type Client = "axios" | "fetch" | "undici";

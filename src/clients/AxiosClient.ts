@@ -1,5 +1,6 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import type { ClientOptions } from "../types";
+import HttpClient from "./HttpClient";
 
 class AxiosClient {
 	public async custom<ResponseJSON>(options: ClientOptions): Promise<ResponseJSON> {
@@ -7,23 +8,7 @@ class AxiosClient {
 
 		return axios<ResponseJSON>(options)
 			.then((response) => response.data)
-			.catch((error: unknown) => {
-				let { message = "An unknown error occurred" } = error as Error;
-				if (error instanceof AxiosError) {
-					const { response } = error;
-
-					if (typeof response?.data === "object") {
-						message = response?.data?.errors?.[0]?.message || response?.data?.error?.message || response?.data?.message;
-					} else if (typeof response?.data === "string") {
-						const trimmedData = response.data.trim();
-						const errorText = trimmedData.length > 0 ? trimmedData : response.statusText;
-
-						message = errorText;
-					}
-				}
-
-				throw new Error(message);
-			});
+			.catch((error: unknown) => HttpClient.handleErrors(error, "axios"));
 	}
 
 	async get<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {

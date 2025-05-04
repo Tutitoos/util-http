@@ -1,5 +1,6 @@
 import { contentTypes } from "../constants";
 import type { ClientOptions, ContentTypeHandlerKey } from "../types";
+import HttpClient from "./HttpClient";
 
 class FetchClient {
 	private readonly contentHandlers: Record<ContentTypeHandlerKey, (body: Response) => Promise<any>> = {
@@ -21,29 +22,31 @@ class FetchClient {
 		Reflect.deleteProperty(config, "data");
 		Reflect.deleteProperty(config, "url");
 
-		return fetch(url, config).then(async (response) => {
-			if (!response.ok) {
-				throw new Error(response.statusText);
-			}
+		return fetch(url, config)
+			.then(async (response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText);
+				}
 
-			const contentTypeRaw = (response.headers.get("Content-Type") || response.headers.get("content-type"))!;
-			if (!contentTypeRaw) {
-				throw new Error("No Content-Type header");
-			}
+				const contentTypeRaw = (response.headers.get("Content-Type") || response.headers.get("content-type"))!;
+				if (!contentTypeRaw) {
+					throw new Error("No Content-Type header");
+				}
 
-			const contentType = contentTypeRaw.split(";")[0];
-			if (!contentType) {
-				throw new Error("No Content-Type header");
-			}
+				const contentType = contentTypeRaw.split(";")[0];
+				if (!contentType) {
+					throw new Error("No Content-Type header");
+				}
 
-			const handlerKey = contentTypes[contentType];
-			if (handlerKey) {
-				const handler = this.contentHandlers[handlerKey];
-				return (await handler(response)) as ResponseJSON;
-			}
+				const handlerKey = contentTypes[contentType];
+				if (handlerKey) {
+					const handler = this.contentHandlers[handlerKey];
+					return (await handler(response)) as ResponseJSON;
+				}
 
-			throw new Error(`Unsupported Content-Type: ${contentType}`);
-		});
+				throw new Error(`Unsupported Content-Type: ${contentType}`);
+			})
+			.catch((error: unknown) => HttpClient.handleErrors(error, "fetch"));
 	}
 
 	async get<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
