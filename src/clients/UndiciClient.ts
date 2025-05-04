@@ -5,6 +5,7 @@ import type { ClientOptions, ContentTypeHandlerKey } from "../types";
 import HttpClient from "./HttpClient";
 
 class UndiciClient {
+	private static _instance: UndiciClient;
 	private readonly contentHandlers: Record<ContentTypeHandlerKey, (body: BodyReadable & Dispatcher.BodyMixin) => Promise<any>> = {
 		json: async (body) => body.json(),
 		urlencoded: async (body) => body.formData(),
@@ -13,7 +14,13 @@ class UndiciClient {
 		buffer: async (body) => body.arrayBuffer()
 	};
 
-	public async custom<ResponseJSON>(config: ClientOptions): Promise<ResponseJSON> {
+	public static getInstance(): UndiciClient {
+		UndiciClient._instance ||= new UndiciClient();
+
+		return UndiciClient._instance;
+	}
+
+	private async custom<ResponseJSON>(config: ClientOptions): Promise<ResponseJSON> {
 		const url = `${config.url}`;
 
 		if (config.timeout === 0) config.timeout = 15000;
@@ -51,35 +58,35 @@ class UndiciClient {
 		throw new Error(`Unsupported Content-Type: ${contentType}`);
 	}
 
-	async get<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async get<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...options,
 			method: "GET"
 		});
 	}
 
-	async post<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async post<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...options,
 			method: "POST"
 		});
 	}
 
-	async patch<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async patch<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...options,
 			method: "PATCH"
 		});
 	}
 
-	async put<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async put<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...options,
 			method: "PUT"
 		});
 	}
 
-	async delete<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async delete<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...options,
 			method: "DELETE"

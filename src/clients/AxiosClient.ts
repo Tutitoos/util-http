@@ -3,7 +3,15 @@ import type { ClientOptions } from "../types";
 import HttpClient from "./HttpClient";
 
 class AxiosClient {
-	public async custom<ResponseJSON>(options: ClientOptions): Promise<ResponseJSON> {
+	private static _instance: AxiosClient;
+
+	public static getInstance(): AxiosClient {
+		AxiosClient._instance ||= new AxiosClient();
+
+		return AxiosClient._instance;
+	}
+
+	private async custom<ResponseJSON>(options: ClientOptions): Promise<ResponseJSON> {
 		if (options.timeout === 0) options.timeout = 15000;
 
 		return axios<ResponseJSON>(options)
@@ -11,35 +19,35 @@ class AxiosClient {
 			.catch((error: unknown) => HttpClient.handleErrors(error, "axios"));
 	}
 
-	async get<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async get<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...options,
 			method: "GET"
 		});
 	}
 
-	async post<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async post<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...options,
 			method: "POST"
 		});
 	}
 
-	async patch<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async patch<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...options,
 			method: "PATCH"
 		});
 	}
 
-	async put<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async put<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...options,
 			method: "PUT"
 		});
 	}
 
-	async delete<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async delete<ResponseJSON>(options: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...options,
 			method: "DELETE"

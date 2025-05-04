@@ -3,6 +3,7 @@ import type { ClientOptions, ContentTypeHandlerKey } from "../types";
 import HttpClient from "./HttpClient";
 
 class FetchClient {
+	private static _instance: FetchClient;
 	private readonly contentHandlers: Record<ContentTypeHandlerKey, (body: Response) => Promise<any>> = {
 		json: async (body) => body.json(),
 		urlencoded: async (body) => body.formData(),
@@ -11,7 +12,13 @@ class FetchClient {
 		buffer: async (body) => body.arrayBuffer()
 	};
 
-	public async custom<ResponseJSON>(config: ClientOptions): Promise<ResponseJSON> {
+	public static getInstance(): FetchClient {
+		FetchClient._instance ||= new FetchClient();
+
+		return FetchClient._instance;
+	}
+
+	private async custom<ResponseJSON>(config: ClientOptions): Promise<ResponseJSON> {
 		const url = `${config.url}`;
 
 		if (config.timeout === 0) config.timeout = 15000;
@@ -49,14 +56,14 @@ class FetchClient {
 			.catch((error: unknown) => HttpClient.handleErrors(error, "fetch"));
 	}
 
-	async get<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async get<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...config,
 			method: "GET"
 		});
 	}
 
-	async post<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async post<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...config,
 			method: "POST"
@@ -70,14 +77,14 @@ class FetchClient {
 		});
 	}
 
-	async put<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async put<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...config,
 			method: "PUT"
 		});
 	}
 
-	async delete<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
+	public async delete<ResponseJSON>(config: Omit<ClientOptions, "method">): Promise<ResponseJSON> {
 		return this.custom<ResponseJSON>({
 			...config,
 			method: "DELETE"
