@@ -24,7 +24,7 @@
 			"extends": ["xo-typescript", "prettier"],
 			"files": ["*.ts", "*.tsx"],
 			"rules": {
-				"@typescript-eslint/no-unused-vars":  ["warn", { "argsIgnorePattern": "^_" }],
+				"@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
 				"@typescript-eslint/consistent-type-definitions": "off",
 				"@typescript-eslint/prefer-nullish-coalescing": "off",
 				"@typescript-eslint/no-empty-function": "off",
@@ -41,7 +41,8 @@
 				"@typescript-eslint/no-unsafe-return": "off",
 				"@typescript-eslint/switch-exhaustiveness-check": "off",
 				"@typescript-eslint/only-throw-error": "off",
-				"@typescript-eslint/class-literal-property-style": "off"
+				"@typescript-eslint/class-literal-property-style": "off",
+				"@typescript-eslint/use-unknown-in-catch-callback-variable": "off"
 			}
 		}
 	],
