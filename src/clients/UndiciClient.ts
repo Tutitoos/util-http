@@ -25,13 +25,17 @@ class UndiciClient {
 
 		if (config.timeout === 0) config.timeout = 15000;
 
-		Reflect.defineProperty(config, "body", {
-			value: config.data
-		});
-		Reflect.deleteProperty(config, "data");
-		Reflect.deleteProperty(config, "url");
+		const newConfig = {
+			...config,
+			data: undefined,
+			url: undefined,
+			body: config.data
+		};
 
-		const response: Dispatcher.ResponseData = await request(url, config).catch((error: unknown) => {
+		Reflect.deleteProperty(newConfig, "data");
+		Reflect.deleteProperty(newConfig, "url");
+
+		const response: Dispatcher.ResponseData = await request(url, newConfig).catch((error: unknown) => {
 			throw HttpClient.handleErrors(error, "undici");
 		});
 
