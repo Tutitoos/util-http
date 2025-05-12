@@ -23,13 +23,17 @@ class FetchClient {
 
 		if (config.timeout === 0) config.timeout = 15000;
 
-		Reflect.defineProperty(config, "body", {
-			value: config.data
-		});
-		Reflect.deleteProperty(config, "data");
-		Reflect.deleteProperty(config, "url");
+		const newConfig = {
+			...config,
+			data: undefined,
+			url: undefined,
+			body: config.data
+		};
 
-		return fetch(url, config)
+		Reflect.deleteProperty(newConfig, "data");
+		Reflect.deleteProperty(newConfig, "url");
+
+		return fetch(url, newConfig)
 			.then(async (response) => {
 				if (!response.ok) {
 					throw new Error(response.statusText);
