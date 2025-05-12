@@ -29,7 +29,7 @@ class UndiciClient {
 			...config,
 			data: undefined,
 			url: undefined,
-			body: config.data
+			body: typeof config.data === "object" ? JSON.stringify(config.data) : config.data
 		};
 
 		Reflect.deleteProperty(newConfig, "data");
