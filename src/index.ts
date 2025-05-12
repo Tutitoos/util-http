@@ -17,3 +17,8 @@ export { CustomError, Constants };
 // 	.get<Record<string, string>>({ url: "https://pokeapi.co/api/v2/" })
 // 	.then((response) => console.log("Response:", response))
 // 	.catch((error) => console.error("Error:", error));
+
+// new utilHttp.FetchClient()
+// 	.post<Record<string, string>>({ url: "https://pokeapi.co/api/v2/", data: { name: "pikachu" } })
+// 	.then((response) => console.log("Response:", response))
+// 	.catch((error) => console.error("Error:", error));
