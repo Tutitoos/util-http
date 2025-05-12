@@ -39,7 +39,7 @@ class UndiciClient {
 			throw HttpClient.handleErrors(error, "undici");
 		});
 
-		if (response.statusCode !== 200) {
+		if (response.statusCode < 200 || response.statusCode > 299) {
 			throw response;
 		}
 
