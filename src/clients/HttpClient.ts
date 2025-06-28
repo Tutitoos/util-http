@@ -39,12 +39,12 @@ class HttpClient {
 			}
 		}
 
-		if (message.includes("<!DOCTYPE html>") || message.includes("ECONNREFUSED")) {
+		if (typeof message === "string" && (message.includes("<!DOCTYPE html>") || message.includes("ECONNREFUSED"))) {
 			message = "Unavailable Service";
 			statusCode = 503;
 		}
 
-		if (message.includes("ENOTFOUND")) {
+		if (!message || message.includes("ENOTFOUND")) {
 			message = "Resource Not Found";
 			statusCode = 404;
 		}
