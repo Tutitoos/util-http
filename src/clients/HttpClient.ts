@@ -23,15 +23,16 @@ class HttpClient {
 		return HttpClient._instance;
 	}
 
-	public static handleErrors(error: unknown, client: string): CustomError {
-		let { message = "An unknown error occurred", name, cause, stack } = error as Error;
-		let statusCode = 500;
+	public static handleErrors(error: unknown, statusCode: number, client: string): CustomError {
+		let { message = "An unknown error occurred", name, cause, stack, ...errors } = error as Error;
+		statusCode ??= 500;
 		if (error instanceof AxiosError) {
 			const { response } = error;
 
 			statusCode = response?.status || 500;
 			if (typeof response?.data === "object") {
 				message = response?.data?.errors?.[0]?.message || response?.data?.error?.message || response?.data?.message;
+				errors = response?.data;
 			} else if (typeof response?.data === "string") {
 				const trimmedData = response.data.trim();
 				const errorText = trimmedData.length > 0 ? trimmedData : response.statusText;
@@ -49,13 +50,21 @@ class HttpClient {
 			statusCode = 404;
 		}
 
+		if (!String(errors)?.includes("message")) {
+			errors = {
+				message,
+				...errors
+			};
+		}
+
 		return new CustomError({
 			client,
 			message,
 			statusCode,
 			name,
 			cause,
-			stack
+			stack,
+			extra: errors
 		});
 	}
 }

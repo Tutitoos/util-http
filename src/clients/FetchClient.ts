@@ -33,11 +33,11 @@ class FetchClient {
 		Reflect.deleteProperty(newConfig, "data");
 		Reflect.deleteProperty(newConfig, "url");
 
+		let statusCode = 500;
+
 		return fetch(url, newConfig)
 			.then(async (response) => {
-				if (!response.ok) {
-					throw new Error(response.statusText);
-				}
+				statusCode = response.status;
 
 				const contentTypeRaw = (response.headers.get("Content-Type") || response.headers.get("content-type"))!;
 				if (!contentTypeRaw) {
@@ -54,11 +54,19 @@ class FetchClient {
 					throw new Error(`Unsupported Content-Type: ${contentType}`);
 				}
 
+				if (handlerKey === "json" && !response.ok) {
+					const errorData = await response.json();
+					throw {
+						message: response.statusText,
+						...errorData
+					};
+				}
+
 				const handler = this.contentHandlers[handlerKey];
 				return (await handler(response)) as Response;
 			})
 			.catch((error: unknown) => {
-				throw HttpClient.handleErrors(error, "fetch");
+				throw HttpClient.handleErrors(error, statusCode, "fetch");
 			});
 	}
 

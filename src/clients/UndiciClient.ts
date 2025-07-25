@@ -36,12 +36,8 @@ class UndiciClient {
 		Reflect.deleteProperty(newConfig, "url");
 
 		const response: Dispatcher.ResponseData = await request(url, newConfig).catch((error: unknown) => {
-			throw HttpClient.handleErrors(error, "undici");
+			throw HttpClient.handleErrors(error, 500, "undici");
 		});
-
-		if (response.statusCode < 200 || response.statusCode > 299) {
-			throw response;
-		}
 
 		const contentTypeRaw = (response.headers["Content-Type"] || response.headers["content-type"]) as string;
 		if (!contentTypeRaw) {
@@ -56,6 +52,11 @@ class UndiciClient {
 		const handlerKey = contentTypes[contentType];
 		if (!handlerKey) {
 			throw new Error(`Unsupported Content-Type: ${contentType}`);
+		}
+
+		if (response.statusCode < 200 || response.statusCode > 299) {
+			const errorData = (await response.body.json()) as Record<string, unknown>;
+			throw HttpClient.handleErrors(errorData, response.statusCode, "undici");
 		}
 
 		const handler = this.contentHandlers[handlerKey];

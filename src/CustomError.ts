@@ -5,14 +5,16 @@ interface CustomErrorProps {
 	stack?: string;
 	cause?: unknown;
 	client: string;
+	extra?: Record<string, unknown>;
 }
 
 class CustomError extends Error {
 	public readonly statusCode: number;
 	public readonly timestamp: string;
 	public readonly client: string;
+	public readonly extra?: Record<string, unknown>;
 
-	constructor({ name, message, statusCode, stack, cause, client }: CustomErrorProps) {
+	constructor({ name, message, statusCode, stack, cause, client, extra }: CustomErrorProps) {
 		super(message, cause ? { cause } : undefined);
 		Object.setPrototypeOf(this, new.target.prototype);
 
@@ -21,6 +23,7 @@ class CustomError extends Error {
 		this.timestamp = new Date().toISOString();
 		if (stack) this.stack = stack;
 		this.client = client;
+		if (extra) this.extra = extra;
 
 		Error.captureStackTrace(this, this.constructor);
 	}
@@ -33,7 +36,8 @@ class CustomError extends Error {
 			timestamp: this.timestamp,
 			stack: this.stack,
 			cause: this.cause,
-			client: this.client
+			client: this.client,
+			...(this.extra ? { extra: this.extra } : {})
 		};
 	}
 

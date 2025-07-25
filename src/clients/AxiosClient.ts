@@ -17,7 +17,7 @@ class AxiosClient {
 		return axios<Response>(options)
 			.then((response) => response.data)
 			.catch((error: unknown) => {
-				throw HttpClient.handleErrors(error, "axios");
+				throw HttpClient.handleErrors(error, 500, "axios");
 			});
 	}
 
