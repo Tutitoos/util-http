@@ -25,7 +25,6 @@
 		"postbuild": "cp src/types.d.ts dist/types.d.ts",
 		"start": "node dist/index.js",
 		"dev": "ts-node-dev --respawn --transpile-only --poll src/index.ts",
-		"test": "node tests.cjs",
 		"lint": "pnpm run lint:eslint && pnpm run lint:biome",
 		"lint:eslint": "npx eslint --ignore-path .gitignore . --max-warnings 0",
 		"lint:biome": "npx @biomejs/biome check src",
